@@ -12,10 +12,11 @@ const MoviesList = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery<APIGetMovies, Error>({
     queryKey: ['movies'],
     queryFn: async ({ pageParam = 1 }) => {
-      const result = await getMovieList(pageParam);
+      const result = await getMovieList(pageParam as number);
       return result;
     },
     getNextPageParam: (lastPage) => lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
+    initialPageParam: 1,  // Añadimos el parámetro initialPageParam
   });
 
   const observer = useRef<IntersectionObserver | null>(null);
