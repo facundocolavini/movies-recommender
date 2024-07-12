@@ -2,7 +2,8 @@
 import Head from 'next/head';
 import SearchForm from '../components/search-form';
 import { ReactQueryClientProvider } from './context/query-context';
-import MoviesList from '@/components/movie-list';
+import MoviesList from '../components/movie-list';
+ 
 
 export default function Home() {
   return (
