@@ -4,7 +4,8 @@ import { getMovieList } from '@/app/lib/tmdb';
 
 import { APIGetMovies, Result } from '@/app/lib/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import MovieCard from './movie-card';
+import MovieCard from  '../components/movie-card'
+
 
 const MoviesList = () => {
   const [selectedMovies, setSelectedMovies] = useState<number[]>([]);
