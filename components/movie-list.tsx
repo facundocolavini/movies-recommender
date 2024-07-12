@@ -9,13 +9,13 @@ import MovieCard from  '../components/movie-card'
 
 const MoviesList = () => {
   const [selectedMovies, setSelectedMovies] = useState<number[]>([]);
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery<APIGetMovies, Error, APIGetMovies>({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery<APIGetMovies, Error>({
     queryKey: ['movies'],
-    queryFn: async ({ pageParam = 1 }: { pageParam: number }) => {
+    queryFn: async ({ pageParam = 1 }) => {
       const result = await getMovieList(pageParam);
       return result;
     },
-    getNextPageParam: (lastPage) => (lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined),
+    getNextPageParam: (lastPage) => lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
   });
 
   const observer = useRef<IntersectionObserver | null>(null);
