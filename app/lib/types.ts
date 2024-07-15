@@ -55,12 +55,12 @@ export interface SpokenLanguage {
 
 export interface APIGetMovies {
     page:          number;
-    results:       Result[];
+    results:       Movie[];
     total_pages:   number;
     total_results: number;
 }
 
-export interface Result {
+export interface Movie {
     backdrop_path:     string;
     id:                number;
     title:             string;

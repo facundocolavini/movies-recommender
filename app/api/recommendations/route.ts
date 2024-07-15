@@ -7,11 +7,12 @@ import  { NextResponse } from 'next/server';
 
 export  async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
-    const id = searchParams.get('movieId')
-    console.log(id,'aa')
+    const ids = searchParams.get('ids')
+    console.log(ids,'aa')
+    const arrIds = ids?.split(',')
 
   try {
-    const res = await getRecommendations(id ?? '');
+    const res = await getRecommendations(arrIds ?? []);
     
     return NextResponse.json({ res })
   } catch (error) {
