@@ -36,7 +36,7 @@ const MoviesRecommendationList = () => {
             <h2>Movie Recommendations</h2>
             <p>
                 {/* Pasa el texto a html */}
-              {recommendations }
+                <div dangerouslySetInnerHTML={{ __html: recommendations }} />
             </p>
 
         </div>

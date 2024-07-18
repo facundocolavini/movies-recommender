@@ -1,17 +1,14 @@
-import { OpenAIStream, StreamingTextResponse} from 'ai';
-import { OpenAI } from 'openai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { generateText } from 'ai';
 import { getMovie } from './tmdb';
 
-const perplexity = new OpenAI({
-  apiKey: process.env.PERPLEXITY_API_KEY || "",
-  baseURL: "https://api.perplexity.ai",
+// Configuración del cliente de OpenAI
+export const perplexity = createOpenAI({
+  apiKey: process.env.PERPLEXITY_API_KEY ?? '',
+  baseURL: 'https://api.perplexity.ai/',
 });
 
-function buildPrompt(prompts: string[]): { role: "user"; content: string; }[] {
-  return prompts.map(prompt => ({ role: "user", content: prompt }));
-}
-
-export const getRecommendations = async (movieIds: string[]) => {
+export async function getRecommendations(movieIds: string[]) {
   const moviesDetails = await Promise.all(movieIds.map(id => getMovie(id)));
 
   const prompts = moviesDetails.map(dataMovie => {
@@ -24,10 +21,10 @@ export const getRecommendations = async (movieIds: string[]) => {
       production_companies,
       spoken_languages,
     } = dataMovie;
-
-    const genreNames = genres.map((genre: { name: string }) => genre.name).join(', ');
-    const companyNames = production_companies.map((company: { name: string }) => company.name).join(', ');
-    const languageNames = spoken_languages.map((lang: { english_name: string }) => lang.english_name).join(', ');
+    console.log(dataMovie);
+    const genreNames = genres.map(genre => genre.name).join(', ');
+    const companyNames = production_companies.map(company => company.name).join(', ');
+    const languageNames = spoken_languages.map(lang => lang.english_name).join(', ');
 
     return `
       Title: ${title}
@@ -41,54 +38,94 @@ export const getRecommendations = async (movieIds: string[]) => {
   });
 
   const combinedPrompt = `
-  Recomienda películas basadas en las siguientes descripciones: 
-      Usa este tono según la puntuación de la película:
-      1. Muy negativa
-      2. Negativa
-      3. Neutral
-      4. Positiva
-      5. Muy positiva
+  Recomienda algunas películas según los titulos que te proporcionamos.Y hace un listado de peliculas sin repetir, que tengan un genero en comun con las peliculas que te proporcionamos.
+ 
+ 
+  Estas son las peliculas que te proporcionamos:
+  ${prompts.join('\n\n')}
+  
+  - El resultado me lo tenes que devolver en html para poder mostrarlo en la pagina web.
+  Por ejemplo algo asi:
+  <html>
+  <head>
+    <title>Recomendaciones de películas</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Recomendaciones de películas</h1>
+    <p>Basadas en las películas "Boneyard" y "Monkey Man", que son de acción y thriller, se recomiendan las siguientes películas:</p>
+    <table>
+      <tr>
+        <th>Título</th>
+        <th>Resumen</th>
+        <th>Géneros</th>
+        <th>Fecha de lanzamiento</th>
+        <th>Calificación promedio</th>
+      </tr>
+      <tr>
+        <td>Black and Blue</td>
+        <td>A rookie cop captures the murder of a young drug dealer on her body cam, leading her to team up with a community member to escape corrupt cops and criminals.</td>
+        <td>Action, Revenge</td>
+        <td>2019-10-25</td>
+        <td>6.4/10</td>
+      </tr>
+      <tr>
+        <td>Argylle</td>
+        <td>A reclusive author's fictional espionage novels mirror real-life spy actions, leading her on a thrilling adventure with a cat-allergic spy.</td>
+        <td>Action, Spies</td>
+        <td>2024-01-31</td>
+        <td>6.0/10</td>
+      </tr>
+      <tr>
+        <td>Extraction 2</td>
+        <td>Tyler Rake must extract a family from a Georgian gangster's mercy, but the gangster's brother seeks revenge.</td>
+        <td>Action, Terrorism</td>
+        <td>2023-06-16</td>
+        <td>7.0/10</td>
+      </tr>
+      <tr>
+        <td>The Gray Man</td>
+        <td>Court Gentry, aka Sierra Six, becomes a target after uncovering dark CIA secrets, leading to a global manhunt.</td>
+        <td>Action, Spies</td>
+        <td>2022-07-22</td>
+        <td>6.5/10</td>
+      </tr>
+      <tr>
+        <td>Red Notice</td>
+        <td>An FBI profiler and two rival criminals team up to stop a daring heist.</td>
+        <td>Action, Treasure hunt</td>
+        <td>2021-11-12</td>
+        <td>6.3/10</td>
+      </tr>
+    </table>
+  </body>
+</html>
 
-  Recibirás una lista de valoraciones de usuarios en diferentes idiomas pero tu resumen debe estar en español.
-   Tu objetivo es resaltar los temas más comunes y las emociones expresadas por los usuarios.
-   Si hay varios temas, intenta capturar los más importantes.
-  Divídela en 4 párrafos cortos. Máximo 30 palabras en total.
-  No vuelvas a repetir la puntuación.
-  No hagas referencias a puntuaciones concretas ni a la fecha de la valoración.
+  Recorda que solo debe devolver el html en la respuesta
+  `
+  
+  
+  ;
 
-  Estas son las recomendaciones de películas que debes tener en cuenta:
-  ${prompts.join('\n\n')}`;
-
-  const query = {
-    model: 'llama-3-sonar-large-32k-chat',
-    stream: true,
-    messages: buildPrompt([combinedPrompt]),
-    max_tokens: 1000,
+  // Generación de texto con el modelo de OpenAI
+  const { text } = await generateText({
+    model: perplexity('llama-3-sonar-large-32k-online'),
+    prompt: combinedPrompt,
+    maxTokens: 1000,
     temperature: 0.75,
-    frequency_penalty: 1,
-  } as const;
+    frequencyPenalty: 1,
+  });
 
-  const response = await perplexity.chat.completions.create(query);
-  const stream = OpenAIStream(response);
-  const streamingResponse = new StreamingTextResponse(stream);
-// Corrección: Leer el cuerpo de la respuesta una vez y almacenarlo en una variable.
-const recommendationsText = await streamingResponse.text();
-
-
-let formattedText = recommendationsText;
-
-
-// Paso 2: Eliminar caracteres especiales innecesarios.
-formattedText = formattedText
-
-// Paso 3: Reemplazar secuencias de escape de salto de línea por verdaderos saltos de línea (si es necesario).
-// En este caso, el texto ya contiene saltos de línea reales.
-
-// Paso 4: Trim para eliminar espacios extra al principio y al final.
-formattedText = formattedText.trim();
-
-console.log(formattedText);
-
-return formattedText;
-
-};
+  console.log(text);
+  return text;
+}
