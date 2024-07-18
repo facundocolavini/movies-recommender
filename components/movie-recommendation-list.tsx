@@ -2,43 +2,50 @@
 import React, { useEffect, useState } from 'react';
 import { useSelectedMoviesContext } from '@/app/context/movies-context';
 
-// Asumiendo que tienes un tipo o interfaz para las recomendaciones
-// Si las recomendaciones son del mismo tipo que Movie, puedes reutilizar la interfaz Movie
-// De lo contrario, define una interfaz adecuada para tus recomendaciones
-import { Movie } from '@/app/lib/types';
-
 const MoviesRecommendationList = () => {
     const { selectedMovies } = useSelectedMoviesContext();
     const [recommendations, setRecommendations] = useState<string>('');
+    const [isMounted, setIsMounted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (selectedMovies.length > 0) {
+        setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (isMounted && selectedMovies.length > 0) {
+            setIsLoading(true);
             const ids = selectedMovies.map(movie => movie.id).join(',');
             fetch(`/api/recommendations?ids=${ids}`)
                 .then(response => response.json())
                 .then(data => {
-                  console.log(data,'data')
                     if (!data.error) {
-                        // Asegúrate de que la respuesta se ajuste a la estructura esperada
-                        // Aquí se asume que data.arrDataMovie es un array de Movie
                         setRecommendations(data.res);
                     } else {
                         console.error(data.error);
-                        // Manejar el error adecuadamente en tu aplicación
                     }
+                    setIsLoading(false);
                 })
-                .catch(error => console.error('Error fetching recommendations:', error));
+                .catch(error => {
+                    console.error('Error fetching recommendations:', error);
+                    setIsLoading(false);
+                });
         }
-    }, [selectedMovies]); // Dependencia: selectedMovies
+    }, [isMounted, selectedMovies]);
+
+    // No renderizar el componente de recomendaciones hasta que se haya montado
+    if (!isMounted) {
+        return null;
+    }
 
     return (
         <div>
             <h2>Movie Recommendations</h2>
-            <p>
-                {/* Pasa el texto a html */}
+            {isLoading ? (
+                <p>Loading...</p>
+            ) : (
                 <div dangerouslySetInnerHTML={{ __html: recommendations }} />
-            </p>
-
+            )}
         </div>
     );
 };

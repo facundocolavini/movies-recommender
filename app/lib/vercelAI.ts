@@ -18,13 +18,8 @@ export async function getRecommendations(movieIds: string[]) {
       genres,
       release_date,
       vote_average,
-      production_companies,
-      spoken_languages,
     } = dataMovie;
-    console.log(dataMovie);
     const genreNames = genres.map(genre => genre.name).join(', ');
-    const companyNames = production_companies.map(company => company.name).join(', ');
-    const languageNames = spoken_languages.map(lang => lang.english_name).join(', ');
 
     return `
       Title: ${title}
@@ -32,20 +27,20 @@ export async function getRecommendations(movieIds: string[]) {
       Genres: ${genreNames}
       Release Date: ${release_date}
       Vote Average: ${vote_average}
-      Production Companies: ${companyNames}
-      Languages: ${languageNames}
     `;
   });
 
   const combinedPrompt = `
-  Recomienda algunas películas según los titulos que te proporcionamos.Y hace un listado de peliculas sin repetir, que tengan un genero en comun con las peliculas que te proporcionamos.
- 
- 
-  Estas son las peliculas que te proporcionamos:
+  Recomienda algunas películas según los títulos que te proporcionamos. Haz un listado de películas sin repetir, que tengan un género en común con las películas que te proporcionamos.
+
+  Estas son las películas que te proporcionamos:
   ${prompts.join('\n\n')}
   
-  - El resultado me lo tenes que devolver en html para poder mostrarlo en la pagina web.
-  Por ejemplo algo asi:
+  - El resultado me lo tienes que devolver en HTML para poder mostrarlo en la página web.
+  - La tabla debe tener un máximo de 4 películas.
+  - La respuesta solo debe ser HTML y no texto.
+
+  Por ejemplo algo así:
   <html>
   <head>
     <title>Recomendaciones de películas</title>
@@ -63,7 +58,6 @@ export async function getRecommendations(movieIds: string[]) {
   </head>
   <body>
     <h1>Recomendaciones de películas</h1>
-    <p>Basadas en las películas "Boneyard" y "Monkey Man", que son de acción y thriller, se recomiendan las siguientes películas:</p>
     <table>
       <tr>
         <th>Título</th>
@@ -100,30 +94,20 @@ export async function getRecommendations(movieIds: string[]) {
         <td>2022-07-22</td>
         <td>6.5/10</td>
       </tr>
-      <tr>
-        <td>Red Notice</td>
-        <td>An FBI profiler and two rival criminals team up to stop a daring heist.</td>
-        <td>Action, Treasure hunt</td>
-        <td>2021-11-12</td>
-        <td>6.3/10</td>
-      </tr>
     </table>
   </body>
 </html>
 
-  Recorda que solo debe devolver el html en la respuesta
-  `
-  
-  
-  ;
+  Recuerda que solo debe devolver el HTML en la respuesta.
+  `;
 
   // Generación de texto con el modelo de OpenAI
   const { text } = await generateText({
-    model: perplexity('llama-3-sonar-large-32k-online'),
+    model: perplexity('llama-3-sonar-small-32k-online'),
     prompt: combinedPrompt,
-    maxTokens: 1000,
-    temperature: 0.75,
-    frequencyPenalty: 1,
+    maxTokens: 500, // Reducir la cantidad de tokens
+    temperature: 0.7, // Ajustar la temperatura para respuestas más rápidas
+    frequencyPenalty: 0.5, // Ajustar frecuencia de penalización
   });
 
   console.log(text);
