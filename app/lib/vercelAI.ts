@@ -31,7 +31,7 @@ export async function getRecommendations(movieIds: string[]) {
   });
 
   const combinedPrompt = `
-  Recomienda algunas películas según los títulos que te proporcionamos. Haz un listado de películas sin repetir, que tengan un género en común con las películas que te proporcionamos.
+  Recomienda algunas películas según los títulos, genero, fecha de lanzamiento y valoraciones que te proporcionamos. Haz un listado de películas sin repetir, que tengan un género en común con las películas que te proporcionamos.
 
   Estas son las películas que te proporcionamos:
   ${prompts.join('\n\n')}
@@ -40,7 +40,7 @@ export async function getRecommendations(movieIds: string[]) {
   - La tabla debe tener un máximo de 4 películas.
   - La respuesta solo debe ser HTML y no texto.
 
-  Por ejemplo algo así:
+  Toma este ejemplo para que veas como sera el esqueleto de mi html la información no es relevante:
   <html>
   <head>
     <title>Recomendaciones de películas</title>
