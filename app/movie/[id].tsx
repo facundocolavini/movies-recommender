@@ -1,17 +1,45 @@
-'use client'
-// pages/movie/[id].tsx
-import { useRouter } from 'next/router';
+import { GetServerSideProps, NextPage } from 'next';
 
-export default function MovieDetailPage() {
-  const router = useRouter();
-  const { id } = router.query; // Obtener el ID de la película desde la ruta
+// Supongamos que tienes una función para obtener los detalles de la película por ID
+// async function fetchMovieDetails(id: string) {
+//   // Implementación para obtener los detalles de la película
+// }
 
-  // Aquí iría tu lógica para obtener los detalles de la película usando el `id`
+interface MovieDetails {
+  id: string;
+  title: string;
+  description: string;
+  // Agrega más campos según sea necesario
+}
 
+const MovieDetailPage: NextPage<{ movieDetails: MovieDetails }> = ({ movieDetails }) => {
   return (
     <div>
-      <h1>Detalles de la Película</h1>
-      {/* Renderizar los detalles de la película aquí */}
+      <h1>{movieDetails.title}</h1>
+      <p>{movieDetails.description}</p>
+      {/* Renderiza más detalles de la película como necesites */}
     </div>
   );
-}
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.params as { id: string };
+  console.log(id,'id')
+  // Aquí llamarías a tu función para obtener los detalles de la película usando el ID
+  // const movieDetails = await fetchMovieDetails(id as string);
+
+  // Simulando los detalles de la película para el ejemplo
+  const movieDetails = {
+    id: id as string,
+    title: "Título de la Película",
+    description: "Descripción de la Película",
+  };
+
+  return {
+    props: {
+      movieDetails,
+    },
+  };
+};
+
+export default MovieDetailPage;
