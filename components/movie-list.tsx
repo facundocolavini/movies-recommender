@@ -1,16 +1,21 @@
 'use client';
 import { getMovieList } from '@/app/lib/tmdb';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 import { useSelectedMoviesContext } from '@/app/context/movies-context';
+import useInfiniteScroll from '@/app/hooks/use-infinity-scroll';
 import { APIGetMovies, Movie } from '@/app/lib/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import MovieCard from '../components/movie-card';
+import { Button } from './ui/button';
+import { ChevronRight } from 'lucide-react';
+
 
 
 const MoviesList = () => {
   const { selectedMovies, selectMovie } = useSelectedMoviesContext();
-  console.log(selectedMovies)
+  console.log(selectedMovies, '/Home');
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery<APIGetMovies, Error>({
     queryKey: ['movies'],
     queryFn: async ({ pageParam = 1 }) => {
@@ -21,45 +26,27 @@ const MoviesList = () => {
     initialPageParam: 1,
   });
 
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastMovieElementRef = useRef<HTMLDivElement | null>(null);
+  const lastElementRef = useInfiniteScroll({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  });
 
-  const loadMoreMovies = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      fetchNextPage();
-    }
-  };
-
-  useEffect(() => {
-    const loadMoreObserver = () => {
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage) {
-          fetchNextPage();
-        }
-      });
-      if (lastMovieElementRef.current) {
-        observer.current.observe(lastMovieElementRef.current);
-      }
-    };
-
-    loadMoreObserver();
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-    };
-  }, [data, fetchNextPage, hasNextPage, lastMovieElementRef]);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
-      {data?.pages.map((page, pageIndex) => (
-        <React.Fragment key={pageIndex}>
-          {(page.results as Movie[]).map((movie: Movie, movieIndex: number) => {
+    <>
+      <Button asChild>
+        <Link href="/recommendation">
+           Ver recomendaciones
+          <ChevronRight size={24} />
+        </Link>
+      </Button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
+        {data?.pages.map((page, pageIndex) => (
+          <React.Fragment key={pageIndex}>
+            {(page.results as Movie[]).map((movie: Movie, movieIndex: number) => {
               return (
-                <div ref={lastMovieElementRef} key={movie.id}>
+                <div ref={lastElementRef} key={movie.id}>
                   <MovieCard
                     movie={movie}
                     onSelect={() => selectMovie(movie)}
@@ -67,18 +54,13 @@ const MoviesList = () => {
                   />
                 </div>
               );
-          })}
-        </React.Fragment>
-      ))}
-      <button
-        onClick={loadMoreMovies}
-        disabled={!hasNextPage || isFetchingNextPage}
-        className={`mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 disabled:bg-blue-300 ${!hasNextPage || isFetchingNextPage ? 'cursor-not-allowed' : ''
-          }`}
-      >
-        {isFetchingNextPage ? 'Cargando...' : 'Cargar más'}
-      </button>
-    </div>
+            })}
+          </React.Fragment>
+        ))}
+
+      </div>
+    </>
+
   );
 };
 
