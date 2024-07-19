@@ -41,3 +41,23 @@ export async function getMovieList(page:number) {
   return data
 
 }
+
+// Función auxiliar para buscar películas en TMDb por título
+export async function searchMovieByTitle(title: string) {
+  const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(title)}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.results.length > 0) {
+      // Retorna el primer resultado de la búsqueda
+      return data.results[0];
+    } else {
+      // No se encontró la película en TMDb
+      return { title, notFound: true };
+    }
+  } catch (error) {
+    console.error('Error al buscar película:', error);
+    return null;
+  }
+}

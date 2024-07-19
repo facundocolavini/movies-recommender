@@ -58,7 +58,6 @@ const MoviesList = () => {
       {data?.pages.map((page, pageIndex) => (
         <React.Fragment key={pageIndex}>
           {(page.results as Movie[]).map((movie: Movie, movieIndex: number) => {
-           /*  if (data.pages.length === pageIndex + 1 && page.results.length === movieIndex + 1) { */
               return (
                 <div ref={lastMovieElementRef} key={movie.id}>
                   <MovieCard
@@ -68,16 +67,6 @@ const MoviesList = () => {
                   />
                 </div>
               );
-           /*  } else {
-              return (
-                <MovieCard
-                  key={movie.id}
-                  movie={movie}
-                  onSelect={() => selectMovie(movie)}
-                  isSelected={selectedMovies.some((m: Movie) => m.id === movie.id)}
-                />
-              );
-            } */
           })}
         </React.Fragment>
       ))}

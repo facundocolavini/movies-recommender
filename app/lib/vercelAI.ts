@@ -31,49 +31,16 @@ export async function getRecommendations(movieIds: string[]) {
   });
 
   const combinedPrompt = `
-  Recomienda películas basadas en las siguientes descripciones. Genera una tabla HTML con un máximo de 4 películas que podrían interesar al usuario, excluyendo las películas que el usuario ha seleccionado previamente. Cada película debe tener su propio conjunto de datos organizados en filas y columnas, como se muestra en el ejemplo.
-
-  Estas son las películas que te proporcionamos:
+  - Recomenda películas basadas en 5 peliculas que el usuario seleccionó
+  - Tenes que darme solamente nombres de las peliculas segun las siguientes recomendaciones:
   ${prompts.join('\n\n')}
-  
-  Responde con una tabla HTML organizada de la siguiente manera:
-
-  <html>
-  <head>
-    <title>Recomendaciones de películas</title>
-    <style>
-      table {
-        border-collapse: collapse;
-        width: 100%;
-      }
-      th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Recomendaciones de películas</h1>
-    <table>
-      <tr>
-        <th>Título</th>
-        <th>Resumen</th>
-        <th>Géneros</th>
-        <th>Fecha de lanzamiento</th>
-        <th>Calificación promedio</th>
-      </tr>
-      <tr>
-        <td>Ejemplo Título 1</td>
-        <td>Ejemplo Resumen 1</td>
-        <td>Ejemplo Géneros 1</td>
-        <td>Ejemplo Fecha 1</td>
-        <td>Ejemplo Calificación 1</td>
-      </tr>
-   
-    </table>
-  </body>
-  </html>
+  - Las recomendaciones tienen que tener cohesion con las peliculas seleccionadas
+  - Solamente el nombre de la pelicula
+  - Hasta 5 recomendaciones
+  - Separa cada titulo con un - (guion)
+  - Si no tenes recomendaciones, escribí "No tengo recomendaciones"
+  - No se pueden repetir nombres de peliculas
+  - No mostrar las mismas peliculas que el usuario seleccionó
   `;
 
   // Generación de texto con el modelo de OpenAI
@@ -88,3 +55,4 @@ export async function getRecommendations(movieIds: string[]) {
   console.log(text);
   return text;
 }
+
