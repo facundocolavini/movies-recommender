@@ -1,8 +1,11 @@
 'use client'
-import React from 'react';
+import React, { useMemo } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { StarIcon, CheckCircleIcon } from 'lucide-react';
+import { Input } from './ui/input';
+import { useSelectedMoviesContext } from '@/app/context/movies-context';
+import { Movie } from '@/app/lib/types';
 
 interface MovieCardProps {
   movie: {
@@ -11,26 +14,27 @@ interface MovieCardProps {
     poster_path: string;
     vote_average: number;
   };
-  onSelect: (movieId: number) => void;
-  isSelected: boolean;
+/*   onSelect: (movieId: number) => void;
+  isSelected: boolean; */
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie, onSelect, isSelected }) => {
+const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
+  const { selectedMovies, selectMovie } = useSelectedMoviesContext();
+  const isSelected =   useMemo(() => selectedMovies.some((m: Movie) => m.id === movie.id), [selectedMovies, movie.id]);
   const imageURL = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
   const handleSelect = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault(); // Previene el evento del checkbox cuando se hace clic en la tarjeta
-    onSelect(movie.id);
+    e.preventDefault();
+    selectMovie(movie as Movie);
   };
 
   return (
     <Card
-      className={`group relative rounded-lg overflow-hidden cursor-pointer transition-shadow duration-300 ease-in-out ${
-        isSelected ? 'ring-4 ring-blue-500 shadow-2xl' : 'shadow-lg hover:shadow-2xl'
+      className={`group w-full relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ease-in-out ${
+        isSelected ? 'ring-4 ring-blue-500 shadow-xl' : 'shadow-md hover:shadow-xl'
       }`}
       onClick={handleSelect}
     >
-      <div className="relative h-80 overflow-hidden rounded-lg">
-        {/* Capa negra con gradiente estilo Netflix */}
+      <div className="relative  h-80 overflow-hidden rounded-lg">
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black to-transparent opacity-75"></div>
         <Image
           src={imageURL}
@@ -38,22 +42,22 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onSelect, isSelected }) =>
           layout="fill"
           objectFit="cover"
           priority
-          className="transform group-hover:scale-105 transition-transform duration-300"
+          className="transform group-hover:scale-110 transition-transform duration-500"
         />
         {isSelected && (
           <div className="absolute top-4 right-4 text-white">
-            <CheckCircleIcon className="h-6 w-6" />
+            <CheckCircleIcon className="h-6 w-6 animate-pulse" />
           </div>
         )}
         <label className="absolute bottom-4 left-4 flex items-center cursor-pointer">
-          <input
+          <Input
             type="checkbox"
-            className="sr-only" // Oculta el checkbox pero sigue siendo accesible
+            className="sr-only"
             checked={isSelected}
             onChange={() => {}}
             onClick={handleSelect}
           />
-          <div className={`p-2 rounded-full ${isSelected ? 'bg-blue-500' : 'bg-white bg-opacity-50'} transition duration-200`}>
+          <div className={`p-2 rounded-full ${isSelected ? 'bg-blue-500' : 'bg-white bg-opacity-50'} transition duration-300`}>
             <CheckCircleIcon className={`h-5 w-5 ${isSelected ? 'text-white' : 'text-blue-500'}`} />
           </div>
           <span className="ml-2 text-sm text-white">Seleccionar</span>

@@ -11,6 +11,7 @@ import MovieCard from '../components/movie-card';
 import { Button } from './ui/button';
 import { ChevronRight } from 'lucide-react';
 import { TransitionLink } from './transition-links';
+import { MoviesDrawer } from './movies-drawer';
 
 
 
@@ -35,23 +36,16 @@ const MoviesList = () => {
 
 
   return (
-    <section className='bg-black'>
-      <Button asChild>
-      <TransitionLink href="/recommendation">
-           Ver recomendaciones
-          <ChevronRight size={24} />
-        </ TransitionLink>
-      </Button>
+    <section >
+      <MoviesDrawer/>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
         {data?.pages.map((page, pageIndex) => (
-          <React.Fragment key={pageIndex}>
+          <React.Fragment key={page.results[pageIndex].id}>
             {(page.results as Movie[]).map((movie: Movie, movieIndex: number) => {
               return (
                 <div ref={lastElementRef} key={movie.id}>
                   <MovieCard
                     movie={movie}
-                    onSelect={() => selectMovie(movie)}
-                    isSelected={selectedMovies.some((m: Movie) => m.id === movie.id)}
                   />
                 </div>
               );
