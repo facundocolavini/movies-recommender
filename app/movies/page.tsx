@@ -1,14 +1,11 @@
-import React, { Suspense } from 'react'
-import { ReactQueryClientProvider } from '../context/query-context'
 import MoviesList from '@/components/movie-list'
+import { ReactQueryClientProvider } from '../context/query-context'
 
 const MoviesPage = () => {
   return (
-    <Suspense fallback={<p className='bg-black' >Loading feed...</p>}>
     <ReactQueryClientProvider>
-        <MoviesList />
-      </ReactQueryClientProvider>
-    </Suspense>
+      <MoviesList />
+    </ReactQueryClientProvider>
   )
 }
 

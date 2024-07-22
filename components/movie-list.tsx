@@ -10,6 +10,7 @@ import Link from 'next/link';
 import MovieCard from '../components/movie-card';
 import { Button } from './ui/button';
 import { ChevronRight } from 'lucide-react';
+import { TransitionLink } from './transition-links';
 
 
 
@@ -34,12 +35,12 @@ const MoviesList = () => {
 
 
   return (
-    <>
+    <section className='bg-black'>
       <Button asChild>
-        <Link href="/recommendation">
+      <TransitionLink href="/recommendation">
            Ver recomendaciones
           <ChevronRight size={24} />
-        </Link>
+        </ TransitionLink>
       </Button>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
         {data?.pages.map((page, pageIndex) => (
@@ -59,7 +60,7 @@ const MoviesList = () => {
         ))}
 
       </div>
-    </>
+    </section>
 
   );
 };
