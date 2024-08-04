@@ -18,7 +18,7 @@ import { ScrollArea } from "./ui/scroll-area";
 
 
 export function MoviesDrawer() {
-  const { selectedMovies } = useSelectedMoviesContext();
+  const { selectedMovies, clearSelectedMovies } = useSelectedMoviesContext();
 
   return (
     <Sheet>
@@ -41,15 +41,15 @@ export function MoviesDrawer() {
               </div>
             ))}
           </ScrollArea>
-          <SheetDescription>
+          <SheetDescription className="grid grid-cols md:grid-cols-2 gap-x-2 justify-center">
             <Button asChild>
               <TransitionLink href="/recommendation">
-                Ver recomendaciones
+                Ver Recomendaciones
                 <ChevronRight size={24} />
               </TransitionLink>
             </Button>
             <SheetTrigger asChild>
-              <Button variant="outline">Cerrar</Button>
+              <Button variant="outline" onClick={()=>clearSelectedMovies()}>Cerrar</Button>
             </SheetTrigger>
           </SheetDescription>
         </div>

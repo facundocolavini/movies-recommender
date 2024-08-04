@@ -6,6 +6,11 @@ import { Movie } from '../lib/types';
 const useSelectedMovies = () => {
   const [selectedMovies, setSelectedMovies] = useState<Movie[]>([]);
 
+  // Función para eliminar todas las películas seleccionadas
+  const clearSelectedMovies = () => {
+    setSelectedMovies([]);
+  };
+
   const selectMovie = (movie: Movie) => {
     setSelectedMovies((prevSelectedMovies) => {
       if (prevSelectedMovies.find((m) => m.id === movie.id)) {
@@ -17,7 +22,7 @@ const useSelectedMovies = () => {
     });
   };
 
-  return { selectedMovies, selectMovie };
+  return { selectedMovies, selectMovie,clearSelectedMovies };
 };
 
 export default useSelectedMovies;

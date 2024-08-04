@@ -8,15 +8,16 @@ import useSelectedMovies from '../hooks/use-selected-movies';
 interface SelectedMoviesContextType {
   selectedMovies: Movie[];
   selectMovie: (movie: Movie) => void;
+  clearSelectedMovies : () => void;
 }
 
 const SelectedMoviesContext = createContext<SelectedMoviesContextType | undefined>(undefined);
 
 export const SelectedMoviesProvider = ({ children }: { children: ReactNode }) => {
-  const { selectedMovies, selectMovie } = useSelectedMovies();
+  const { selectedMovies, selectMovie,clearSelectedMovies } = useSelectedMovies();
 
   return (
-    <SelectedMoviesContext.Provider value={{ selectedMovies, selectMovie }}>
+    <SelectedMoviesContext.Provider value={{ selectedMovies, selectMovie, clearSelectedMovies }}>
       {children}
     </SelectedMoviesContext.Provider>
   );
