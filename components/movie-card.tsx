@@ -36,13 +36,10 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
     >
       <div className="relative  h-80 overflow-hidden rounded-lg">
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black to-transparent opacity-75"></div>
-        <Image
+        <img
           src={imageURL}
           alt={movie.title}
-          layout="fill"
-          objectFit="cover"
-          priority
-          className="transform group-hover:scale-110 transition-transform duration-500"
+          className="transform group-hover:scale-110 transition-transform duration-500 object-cover"
         />
         {isSelected && (
           <div className="absolute top-4 right-4 text-white">
