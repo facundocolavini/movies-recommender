@@ -42,7 +42,7 @@ export function MoviesDrawer() {
             ))}
           </ScrollArea>
           <SheetDescription className="grid grid-cols md:grid-cols-2 gap-x-2 justify-center">
-            <Button asChild className="mb-2" disabled={selectedMovies.length > 0}>
+            <Button asChild className="mb-2" disabled={ selectedMovies.length === 0 || selectedMovies.length > 0} >
               <TransitionLink href="/recommendation">
               Recomendar
                 <ChevronRight size={24} className="ml-2" />

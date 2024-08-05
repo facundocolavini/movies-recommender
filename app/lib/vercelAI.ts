@@ -1,6 +1,7 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateText } from 'ai';
 import { getMovie } from './tmdb';
+import { Movie } from './types';
 
 // Configuración del cliente de OpenAI
 export const perplexity = createOpenAI({
@@ -56,3 +57,26 @@ export async function getRecommendations(movieIds: string[]) {
   return text;
 }
 
+
+// Traduce la overview de mis peliculas recomendadas 
+export async function getRecommendationsTranslations(movies: Movie[]): Promise<Movie[]> {
+  const translatedMovies = await Promise.all(movies.map(async (movie) => {
+    const prompt = `Traduce al español la siguiente descripción de película: ${movie.overview}`;
+    
+    // Generación de texto con el modelo de OpenAI
+    const { text: translatedOverview } = await generateText({
+      model: perplexity('llama-3-8b-instruct'),
+      prompt: prompt,
+      maxTokens: 1000,
+      temperature: 0.75,
+      frequencyPenalty: 1,
+    });
+
+    return {
+      ...movie,
+      overview: translatedOverview.trim(),
+    };
+  }));
+
+  return translatedMovies;
+}

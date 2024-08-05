@@ -18,14 +18,19 @@ const useSelectedMovies = () => {
   const selectMovie = (movie: Movie) => {
     setSelectedMovies((prevSelectedMovies) => {
       if (prevSelectedMovies.find((m) => m.id === movie.id)) {
+        // Si la película ya está seleccionada, la eliminamos
         return prevSelectedMovies.filter((m) => m.id !== movie.id);
-      } else if (prevSelectedMovies.length < 5) {
+      } else {
+        // Si no está seleccionada y ya hay 5 películas seleccionadas, reemplazamos la más antigua
+        if (prevSelectedMovies.length === 5) {
+          return [...prevSelectedMovies.slice(1), movie];
+        }
+        // Si no hay 5 películas seleccionadas, simplemente agregamos la nueva
         return [...prevSelectedMovies, movie];
       }
-      return prevSelectedMovies;
     });
   };
-
+  
   return { selectedMovies, selectMovie,clearSelectedMovies };
 };
 

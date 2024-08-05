@@ -12,41 +12,37 @@ const MoviesRecommendationList = () => {
     const { selectedMovies } = useSelectedMoviesContext();
     console.log(selectedMovies, '/recommedation')
     const [recommendations, setRecommendations] = useState<Movie[]>();
-    const [isMounted, setIsMounted] = useState(false);
+
     const [isLoading, setIsLoading] = useState(false);
-        useEffect(() => {
-            let isMounted = true; // Se establece a true cuando el componente se monta
+    useEffect(() => {
+        let isMounted = true; // Se establece a true cuando el componente se monta
 
-            const fetchRecommendations = async () => {
-                if (!isMounted) return;
+        const fetchRecommendations = async () => {
+        
 
-                setIsLoading(true);
-                try {
-                    const ids = selectedMovies.map(movie => movie.id).join(',');
-                    const res = await fetch(`/api/recommendations?ids=${ids}`);
-                    const data = await res.json()
-                    console.log(data)
-                    if (!data.error) {
-                        setRecommendations(data);
-                    } else {
-                        console.error('Error fetching recommendations:', data.error);
-                    }
-                } catch (error) {
-                    console.error('Error fetching recommendations:', error);
-                } finally {
-                    if (isMounted) setIsLoading(false);
+            setIsLoading(true);
+            try {
+                const ids = selectedMovies.map(movie => movie.id).join(',');
+                const res = await fetch(`/api/recommendations?ids=${ids}`);
+                const data = await res.json()
+                console.log(data)
+                if (!data.error) {
+                    setRecommendations(data);
+                } else {
+                    console.error('Error fetching recommendations:', data.error);
                 }
-            };
+            } catch (error) {
+                console.error('Error fetching recommendations:', error);
+            } finally {
+                if (isMounted) setIsLoading(false);
+            }
+        };
 
-            fetchRecommendations();
+        fetchRecommendations();
 
-            return () => {
-                isMounted = false;
-            };
+    }, [selectedMovies]);
 
-        }, [selectedMovies]);
 
-    console.log(recommendations, 'recomendaciones')
     return (
         <div className="container mx-auto px-4">
 

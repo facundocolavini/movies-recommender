@@ -1,7 +1,7 @@
 // pages/api/recommendations.ts
 import { searchMovieByTitle } from '@/app/lib/tmdb';
 import { Movie } from '@/app/lib/types';
-import { getRecommendations } from '@/app/lib/vercelAI';
+import { getRecommendations, getRecommendationsTranslations } from '@/app/lib/vercelAI';
 import { NextResponse } from 'next/server';
 
 
@@ -42,8 +42,8 @@ export async function GET(request: Request) {
 
     // Filtrar cualquier posible valor nulo (en caso de errores)
     const validMoviesDetails = moviesDetails.filter(detail => detail !== null) as Movie[];
-
-    return NextResponse.json(validMoviesDetails);
+    const moviesTranslated = await getRecommendationsTranslations(validMoviesDetails);
+    return NextResponse.json(moviesTranslated);
   } catch (error) {
     console.error(error);
     return NextResponse.json({
