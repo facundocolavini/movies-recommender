@@ -1,11 +1,10 @@
 'use client'
-import React, { useMemo } from 'react';
-import Image from 'next/image';
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
-import { StarIcon, CheckCircleIcon } from 'lucide-react';
-import { Input } from './ui/input';
 import { useSelectedMoviesContext } from '@/app/context/movies-context';
 import { Movie } from '@/app/lib/types';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { CheckCircleIcon, StarIcon } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { Input } from './ui/input';
 
 interface MovieCardProps {
   movie: {
@@ -14,13 +13,13 @@ interface MovieCardProps {
     poster_path: string;
     vote_average: number;
   };
-/*   onSelect: (movieId: number) => void;
-  isSelected: boolean; */
+  /*   onSelect: (movieId: number) => void;
+    isSelected: boolean; */
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
   const { selectedMovies, selectMovie } = useSelectedMoviesContext();
-  const isSelected =   useMemo(() => selectedMovies.some((m: Movie) => m.id === movie.id), [selectedMovies, movie.id]);
+  const isSelected = useMemo(() => selectedMovies.some((m: Movie) => m.id === movie.id), [selectedMovies, movie.id]);
   const imageURL = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
   const handleSelect = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -29,9 +28,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
 
   return (
     <Card
-      className={`group w-full relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ease-in-out ${
-        isSelected ? 'ring-4 ring-blue-500 shadow-xl' : 'shadow-md hover:shadow-xl'
-      }`}
+      className={`group w-full relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ease-in-out ${isSelected ? 'ring-4 ring-blue-500 shadow-xl' : 'shadow-md hover:shadow-xl'
+        }`}
       onClick={handleSelect}
     >
       <div className="relative  h-80 overflow-hidden rounded-lg">
@@ -51,7 +49,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
             type="checkbox"
             className="sr-only"
             checked={isSelected}
-            onChange={() => {}}
+            onChange={() => { }}
             onClick={handleSelect}
           />
           <div className={`p-2 rounded-full ${isSelected ? 'bg-blue-500' : 'bg-white bg-opacity-50'} transition duration-300`}>
