@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SelectedMoviesProvider } from "./context/movies-context";
 import "./globals.css";
-
+import { Toaster } from "@/components/ui/sonner"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -21,6 +21,7 @@ export default function RootLayout({
       <body className={inter.className}>   
          <SelectedMoviesProvider>
         {children}
+        <Toaster />
         </SelectedMoviesProvider>
         </body>
     </html>

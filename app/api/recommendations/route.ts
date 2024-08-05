@@ -27,15 +27,7 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const ids = searchParams.get('ids')
-  console.log(ids, 'aa')
   const arrIds = ids?.split(',')
-  const recommendedTitles = [
-    'Inspector Gadget',
-    'Chicken Little',
-    'The Incredibles',
-    'Spy Kids',
-    'Penguins of Madagascar'
-  ];
 
   try {
     //  Obtener recomendaciones de películas

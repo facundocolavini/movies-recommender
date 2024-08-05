@@ -1,13 +1,17 @@
 // src/hooks/use-selected-movies.tsx
 import { useState } from 'react';
 import { Movie } from '../lib/types';
-
+import { toast } from "sonner"
 
 const useSelectedMovies = () => {
   const [selectedMovies, setSelectedMovies] = useState<Movie[]>([]);
 
   // Función para eliminar todas las películas seleccionadas
   const clearSelectedMovies = () => {
+    toast("Eliminando todas las películas seleccionadas", {
+      description: "Se han eliminado todas las películas seleccionadas",
+      },
+    )
     setSelectedMovies([]);
   };
 

@@ -25,7 +25,7 @@ const MoviesRecommendationList = () => {
                     const ids = selectedMovies.map(movie => movie.id).join(',');
                     const res = await fetch(`/api/recommendations?ids=${ids}`);
                     const data = await res.json()
-
+                    console.log(data)
                     if (!data.error) {
                         setRecommendations(data);
                     } else {

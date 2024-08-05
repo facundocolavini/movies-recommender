@@ -45,7 +45,7 @@ export async function getRecommendations(movieIds: string[]) {
 
   // Generación de texto con el modelo de OpenAI
   const { text } = await generateText({
-    model: perplexity('llama-3-sonar-large-32k-online'),
+    model: perplexity('llama-3-8b-instruct'),
     prompt: combinedPrompt,
     maxTokens: 1000,
     temperature: 0.75,
