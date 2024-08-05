@@ -32,11 +32,12 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
         }`}
       onClick={handleSelect}
     >
-      <div className="relative  h-80 overflow-hidden rounded-lg">
+      <div className="relative overflow-hidden rounded-lg">
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black to-transparent opacity-75"></div>
         <img
           src={imageURL}
           alt={movie.title}
+          width={500} height={750}
           className="transform group-hover:scale-110 transition-transform duration-500 object-cover"
         />
         {isSelected && (
